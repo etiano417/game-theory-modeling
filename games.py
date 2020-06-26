@@ -1,5 +1,22 @@
 import pdb
 
+class DecisionProblem:
+    """
+    A choice a rational actor faces
+    
+    Properties:
+        actions -- a set of actions available to the player
+        outcome -- a function that accepts actions and returns outcomes
+            (must be defined for every action)
+        preference -- a function comparing two outcomes
+            (must return a number for every possible outcome)
+    """
+    def __init__(self, actions, outcome, preference): 
+        
+        self.actions = actions;
+        self.outcome = outcome;
+        self.preference = preference;
+
 class NormalFormGame:
     """
     construct a new normal form game
