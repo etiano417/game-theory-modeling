@@ -12,7 +12,12 @@ class DecisionProblem:
             (must return a number for every possible outcome)
     """
     def __init__(self, actions, outcome, preference): 
-        
+        if(actions == None):
+            raise TypeError("must include actions set")
+
+        if(len(actions) == 0):
+            raise ValueError("actions set must not be empty")
+
         self.actions = actions;
         self.outcome = outcome;
         self.preference = preference;

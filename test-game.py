@@ -35,7 +35,16 @@ class DecisionProblemConstruction(unittest.TestCase):
     def test_construction(self):
         assert DecisionProblem(self.actions_1, self.outcome_function_1, 
             self.preference_function_1) != None
-            
+
+    def test_construction_missing_actions(self):
+        with self.assertRaises(Exception):
+            DecisionProblem(None, self.outcome_function_1, self.preference_function_1)
+
+    def test_construction_no_actions(self):
+        with self.assertRaises(ValueError):
+            DecisionProblem(frozenset([]), self.outcome_function_1, self.preference_function_1)
+
+
 if __name__ == "__main__":
     unittest.main()
         
