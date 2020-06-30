@@ -21,8 +21,17 @@ class DecisionProblemConstruction(unittest.TestCase):
             action_1c: outcome_1c,
         }
             
-        return outcome_map(action)
-        
+        return outcome_map[action]
+
+    #undefined for 1b
+    def outcome_function_2(self, action): 
+        outcome_map = {
+            action_1a: outcome_1a,
+            action_1c: outcome_1c,
+        }
+            
+        return outcome_map[action]
+         
     def preference_function_1(self, outcome):
         preference_map = {
             outcome_1a: -1,
@@ -30,7 +39,7 @@ class DecisionProblemConstruction(unittest.TestCase):
             outcome_1c: 1,
         }
         
-        return preference_map(outcome)
+        return preference_map[outcome]
     
     def test_construction(self):
         assert DecisionProblem(self.actions_1, self.outcome_function_1, 
@@ -43,6 +52,15 @@ class DecisionProblemConstruction(unittest.TestCase):
     def test_construction_no_actions(self):
         with self.assertRaises(ValueError):
             DecisionProblem(frozenset([]), self.outcome_function_1, self.preference_function_1)
+
+    def test_construction_missing_outcome_function(self):
+        with self.assertRaises(Exception):
+            DecisionProblem(self.actions_1, None, self.preference_function_1)
+
+
+    def test_construction_undefined_outcomes(self):
+        with self.assertRaises(Exception):
+            DecisionProblem(self.actions_1, self.outcome_function_2, self.preference_function_1)
 
 
 if __name__ == "__main__":

@@ -11,15 +11,23 @@ class DecisionProblem:
         preference -- a function comparing two outcomes
             (must return a number for every possible outcome)
     """
-    def __init__(self, actions, outcome, preference): 
+    def __init__(self, actions, outcome_function, preference): 
         if(actions == None):
             raise TypeError("must include actions set")
+        if(outcome_function == None):
+            raise TypeError("must include outcome function")
+        
+        for action in actions:
+            outcome = outcome_function(action)
+            if(outcome == None):
+                raise ValueError("outcome function not defined for action: " + action)
 
+            
         if(len(actions) == 0):
             raise ValueError("actions set must not be empty")
 
         self.actions = actions;
-        self.outcome = outcome;
+        self.outcome_function = outcome_function;
         self.preference = preference;
 
 class NormalFormGame:
