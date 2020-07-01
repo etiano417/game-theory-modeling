@@ -1,66 +1,88 @@
 import unittest
 from games import DecisionProblem
 
-action_1a = "left"
-action_1b = "middle"
-action_1c = "right"
+action_1 = "left"
+action_2 = "middle"
+action_3 = "right"
 
-outcome_1a = "Boston"
-outcome_1b = "New York"
-outcome_1c = "Cleveland"
+outcome_1 = "Boston"
+outcome_2 = "New York"
+outcome_3 = "Cleveland"
 
 class DecisionProblemConstruction(unittest.TestCase):
         
     def setUp(self):
-        self.actions_1 = frozenset([action_1a, action_1b, action_1c])
+        self.actions = frozenset([action_1, action_2, action_3])
         
-    def outcome_function_1(self, action): 
+    def outcome_function(self, action): 
         outcome_map = {
-            action_1a: outcome_1a,
-            action_1b: outcome_1b,
-            action_1c: outcome_1c,
+            action_1: outcome_1,
+            action_2: outcome_2,
+            action_3: outcome_3,
         }
             
         return outcome_map[action]
 
-    #undefined for 1b
-    def outcome_function_2(self, action): 
+    def incomplete_outcome_function(self, action): 
         outcome_map = {
-            action_1a: outcome_1a,
-            action_1c: outcome_1c,
+            action_1: outcome_1,
+            action_3: outcome_3,
         }
             
-        return outcome_map[action]
-         
-    def preference_function_1(self, outcome):
-        preference_map = {
-            outcome_1a: -1,
-            outcome_1b: 0,
-            outcome_1c: 1,
-        }
-        
-        return preference_map[outcome]
+        return outcome_map[action]     
     
+    def preference_function(self, outcome_first, outcome_second):
+        preference_map = {
+            (outcome_1,outcome_1): 0,
+            (outcome_1,outcome_2): 1,
+            (outcome_1,outcome_3): 1,
+            (outcome_2,outcome_1): -1,
+            (outcome_2,outcome_2): 0,
+            (outcome_2,outcome_3): 1,
+            (outcome_3,outcome_1): -1,
+            (outcome_3,outcome_2): -1,
+            (outcome_3,outcome_3): 0,
+        }
+
+        return  preference_map[(outcome_first, outcome_second)]
+   
+    def incomplete_preference_function(self, outcome_first, outcome_second):
+        preference_map = {
+            (outcome_1,outcome_1): 0,
+            (outcome_1,outcome_2): 1,
+            (outcome_1,outcome_3): 1,
+            (outcome_2,outcome_2): 0,
+            (outcome_2,outcome_3): 1,
+            (outcome_3,outcome_1): -1,
+            (outcome_3,outcome_2): -1,
+            (outcome_3,outcome_3): 0,
+        }
+
+        return  preference_map[(outcome_first, outcome_second)]
+
     def test_construction(self):
-        assert DecisionProblem(self.actions_1, self.outcome_function_1, 
-            self.preference_function_1) != None
+        assert DecisionProblem(self.actions, self.outcome_function, 
+            self.preference_function) != None
 
     def test_construction_missing_actions(self):
         with self.assertRaises(Exception):
-            DecisionProblem(None, self.outcome_function_1, self.preference_function_1)
+            DecisionProblem(None, self.outcome_function, self.preference_function)
 
     def test_construction_no_actions(self):
         with self.assertRaises(ValueError):
-            DecisionProblem(frozenset([]), self.outcome_function_1, self.preference_function_1)
+            DecisionProblem(frozenset([]), self.outcome_function, self.preference_function)
 
     def test_construction_missing_outcome_function(self):
         with self.assertRaises(Exception):
-            DecisionProblem(self.actions_1, None, self.preference_function_1)
-
+            DecisionProblem(self.actions, None, self.preference_function)
 
     def test_construction_undefined_outcomes(self):
         with self.assertRaises(Exception):
-            DecisionProblem(self.actions_1, self.outcome_function_2, self.preference_function_1)
+            DecisionProblem(self.actions, self.incomplete_outcome_function, self.preference_function)
+
+    def test_construction_undefined_preferences(self):
+        with self.assertRaises(Exception):
+            DecisionProblem(self.actions, self.outcome_function, self.incomplete_preference_function)
 
 
 if __name__ == "__main__":

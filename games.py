@@ -9,27 +9,43 @@ class DecisionProblem:
         outcome -- a function that accepts actions and returns outcomes
             (must be defined for every action)
         preference -- a function comparing two outcomes
-            (must return a number for every possible outcome)
     """
-    def __init__(self, actions, outcome_function, preference): 
+    def __init__(self, actions, outcome_function, preference_function): 
         if(actions == None):
             raise TypeError("must include actions set")
         if(outcome_function == None):
             raise TypeError("must include outcome function")
         
+        outcomes = []
         for action in actions:
             outcome = outcome_function(action)
+            outcomes.append(outcome)
             if(outcome == None):
                 raise ValueError("outcome function not defined for action: " + action)
 
-            
         if(len(actions) == 0):
             raise ValueError("actions set must not be empty")
 
-        self.actions = actions;
-        self.outcome_function = outcome_function;
-        self.preference = preference;
+        preferences_complete = check_preference_completeness(outcomes, preference_function)
 
+        if(not preferences_complete):
+            raise ValueError("preference function not defined for outcome: " + outcome_1 + "+" + outcome_2)
+
+        self.actions = actions
+        self.outcome_function = outcome_function
+        self.preference_function = preference_function
+
+def check_preference_completeness(outcomes, preference_function): 
+    preferences_complete = True
+
+    for outcome_1 in outcomes:
+        for outcome_2 in outcomes:
+            preference = preference_function(outcome_1, outcome_2)
+            if(preference == None):
+                preferences_complete = False
+
+    return preferences_complete
+    
 class NormalFormGame:
     """
     construct a new normal form game
